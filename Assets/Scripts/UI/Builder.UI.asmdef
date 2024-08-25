@@ -1,0 +1,19 @@
+{
+    "name": "Builder.UI",
+    "rootNamespace": "Builder.UI",
+    "references": [
+        "Builder.Utility",
+        "UniTask",
+        "Unity.TextMeshPro",
+        "VContainer"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

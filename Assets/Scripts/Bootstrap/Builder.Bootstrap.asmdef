@@ -1,0 +1,22 @@
+{
+    "name": "Builder.Bootstrap",
+    "rootNamespace": "Builder.Bootstrap",
+    "references": [
+        "VContainer",
+        "UniTask",
+        "Builder.Utility",
+        "Builder.Root",
+        "Builder.UI",
+        "Builder.Scenes",
+        "Builder.Input"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,17 @@
+{
+    "name": "Builder.Scenes",
+    "rootNamespace": "Builder.Scenes",
+    "references": [
+        "UniTask",
+        "Builder.Utility"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

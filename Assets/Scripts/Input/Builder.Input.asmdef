@@ -1,0 +1,17 @@
+{
+    "name": "Builder.Input",
+    "rootNamespace": "Builder.Input",
+    "references": [
+        "Builder.Utility",
+        "VContainer"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
