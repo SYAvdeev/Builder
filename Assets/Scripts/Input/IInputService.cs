@@ -5,11 +5,12 @@ namespace Builder.Input
 {
     public interface IInputService : ITickable
     {
-        bool IsMoveKeyPressed { get; }
-        bool IsRotateClockwiseKeyPressed { get; }
-        bool IsRotateCounterClockwiseKeyPressed { get; }
-        event Action ShootKeyDown;
-        event Action NextWeaponKeyDown;
-        event Action PreviousWeaponKeyDown;
+        bool IsMoveForwardPressed { get; }
+        bool IsMoveBackPressed { get; }
+        bool IsMoveRightPressed { get; }
+        bool IsMoveLeftPressed { get; }
+        float RotateHorizontalAmount { get; }
+        float RotateVerticalAmount { get; }
+        event Action ActionKeyDown;
     }
 }

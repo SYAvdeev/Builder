@@ -9,18 +9,29 @@ namespace Builder.Input
         order = 0)]
     public class InputConfig : ConfigBase, IInputConfig
     {
-        [SerializeField] private KeyCode _moveKey;
-        [SerializeField] private KeyCode _rotateClockwiseKey;
-        [SerializeField] private KeyCode _rotateCounterClockwiseKey;
-        [SerializeField] private KeyCode _shootKey;
-        [SerializeField] private KeyCode _nextWeaponKey;
-        [SerializeField] private KeyCode _previousWeaponKey;
+        [SerializeField] private KeyCode _moveForwardKey;
+        [SerializeField] private KeyCode _moveBackKey;
+        [SerializeField] private KeyCode _moveRightKey;
+        [SerializeField] private KeyCode _moveLeftKey;
+        [SerializeField] private KeyCode _actionKey;
+        [SerializeField] private string _rotateHorizontalAxis;
+        [SerializeField] private string _rotateVerticalAxis;
+        [SerializeField] private float _rotateSensitivity;
 
-        public KeyCode MoveKey => _moveKey;
-        public KeyCode RotateClockwiseKey => _rotateClockwiseKey;
-        public KeyCode RotateCounterClockwiseKey => _rotateCounterClockwiseKey;
-        public KeyCode ShootKey => _shootKey;
-        public KeyCode NextWeaponKey => _nextWeaponKey;
-        public KeyCode PreviousWeaponKey => _previousWeaponKey;
+        public KeyCode MoveForwardKey => _moveForwardKey;
+
+        public KeyCode MoveBackKey => _moveBackKey;
+
+        public KeyCode MoveRightKey => _moveRightKey;
+
+        public KeyCode MoveLeftKey => _moveLeftKey;
+
+        public string RotateHorizontalAxis => _rotateHorizontalAxis;
+
+        public string RotateVerticalAxis => _rotateVerticalAxis;
+
+        public float RotateSensitivity => _rotateSensitivity;
+
+        public KeyCode ActionKey => _actionKey;
     }
 }

@@ -4,11 +4,13 @@ namespace Builder.Input
 {
     public interface IInputConfig
     {
-        KeyCode MoveKey { get; }
-        KeyCode RotateClockwiseKey { get; }
-        KeyCode RotateCounterClockwiseKey { get; }
-        KeyCode ShootKey { get; }
-        KeyCode NextWeaponKey { get; }
-        KeyCode PreviousWeaponKey { get; }
+        KeyCode MoveForwardKey { get; }
+        KeyCode MoveBackKey { get; }
+        KeyCode MoveRightKey { get; }
+        KeyCode MoveLeftKey { get; }
+        string RotateHorizontalAxis { get; }
+        string RotateVerticalAxis { get; }
+        float RotateSensitivity { get; }
+        KeyCode ActionKey { get; }
     }
 }

@@ -11,31 +11,28 @@ namespace Builder.Input
             _inputConfig = inputConfig;
         }
         
-        public bool IsMoveKeyPressed { get; private set; }
-        public bool IsRotateClockwiseKeyPressed { get; private set; }
-        public bool IsRotateCounterClockwiseKeyPressed { get; private set; }
-        public event Action ShootKeyDown;
-        public event Action NextWeaponKeyDown;
-        public event Action PreviousWeaponKeyDown;
+        public bool IsMoveForwardPressed { get; private set; }
+        public bool IsMoveBackPressed { get; private set; }
+        public bool IsMoveRightPressed { get; private set; }
+        public bool IsMoveLeftPressed { get; private set; }
+        public float RotateHorizontalAmount { get; private set; }
+        public float RotateVerticalAmount { get; private set; }
+        public event Action ActionKeyDown;
         
         public void Tick()
         {
-            IsMoveKeyPressed = UnityEngine.Input.GetKey(_inputConfig.MoveKey);
-            IsRotateClockwiseKeyPressed = UnityEngine.Input.GetKey(_inputConfig.RotateClockwiseKey);
-            IsRotateCounterClockwiseKeyPressed = UnityEngine.Input.GetKey(_inputConfig.RotateCounterClockwiseKey);
+            IsMoveForwardPressed = UnityEngine.Input.GetKey(_inputConfig.MoveForwardKey);
+            IsMoveBackPressed = UnityEngine.Input.GetKey(_inputConfig.MoveBackKey);
+            IsMoveRightPressed = UnityEngine.Input.GetKey(_inputConfig.MoveRightKey);
+            IsMoveLeftPressed = UnityEngine.Input.GetKey(_inputConfig.MoveLeftKey);
+            RotateHorizontalAmount = UnityEngine.Input.GetAxis(_inputConfig.RotateHorizontalAxis) *
+                                     _inputConfig.RotateSensitivity;
+            RotateVerticalAmount = UnityEngine.Input.GetAxis(_inputConfig.RotateVerticalAxis) *
+                                   _inputConfig.RotateSensitivity;
             
-            if (UnityEngine.Input.GetKeyDown(_inputConfig.ShootKey))
+            if (UnityEngine.Input.GetKeyDown(_inputConfig.ActionKey))
             {
-                ShootKeyDown?.Invoke();
-            }
-            
-            if (UnityEngine.Input.GetKeyDown(_inputConfig.NextWeaponKey))
-            {
-                NextWeaponKeyDown?.Invoke();
-            }
-            else if (UnityEngine.Input.GetKeyDown(_inputConfig.PreviousWeaponKey))
-            {
-                PreviousWeaponKeyDown?.Invoke();
+                ActionKeyDown?.Invoke();
             }
         }
     }
