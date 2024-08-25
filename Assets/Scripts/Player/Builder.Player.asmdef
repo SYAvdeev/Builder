@@ -1,0 +1,18 @@
+{
+    "name": "Builder.Player",
+    "rootNamespace": "Builder.Player",
+    "references": [
+        "Builder.Input",
+        "Builder.Utility",
+        "VContainer"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

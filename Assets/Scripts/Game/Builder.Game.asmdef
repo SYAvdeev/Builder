@@ -1,0 +1,20 @@
+{
+    "name": "Builder.Game",
+    "rootNamespace": "Builder.Game",
+    "references": [
+        "Builder.UI",
+        "Builder.Utility",
+        "VContainer",
+        "UniTask",
+        "Builder.Player"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

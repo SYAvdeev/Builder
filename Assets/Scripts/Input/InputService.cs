@@ -25,10 +25,8 @@ namespace Builder.Input
             IsMoveBackPressed = UnityEngine.Input.GetKey(_inputConfig.MoveBackKey);
             IsMoveRightPressed = UnityEngine.Input.GetKey(_inputConfig.MoveRightKey);
             IsMoveLeftPressed = UnityEngine.Input.GetKey(_inputConfig.MoveLeftKey);
-            RotateHorizontalAmount = UnityEngine.Input.GetAxis(_inputConfig.RotateHorizontalAxis) *
-                                     _inputConfig.RotateSensitivity;
-            RotateVerticalAmount = UnityEngine.Input.GetAxis(_inputConfig.RotateVerticalAxis) *
-                                   _inputConfig.RotateSensitivity;
+            RotateHorizontalAmount = UnityEngine.Input.GetAxis(_inputConfig.RotateHorizontalAxis);
+            RotateVerticalAmount = -UnityEngine.Input.GetAxis(_inputConfig.RotateVerticalAxis);
             
             if (UnityEngine.Input.GetKeyDown(_inputConfig.ActionKey))
             {

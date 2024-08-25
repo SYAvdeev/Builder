@@ -10,7 +10,7 @@ namespace Builder.Input
         KeyCode MoveLeftKey { get; }
         string RotateHorizontalAxis { get; }
         string RotateVerticalAxis { get; }
-        float RotateSensitivity { get; }
+        
         KeyCode ActionKey { get; }
     }
 }
