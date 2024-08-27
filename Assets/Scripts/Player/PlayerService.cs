@@ -1,4 +1,5 @@
-﻿using Builder.Input;
+﻿using System;
+using Builder.Input;
 using UnityEngine;
 
 namespace Builder.Player
@@ -8,6 +9,7 @@ namespace Builder.Player
         private readonly IPlayerModel _playerModel;
         private readonly IInputService _inputService;
         public IPlayerModel Model { get; }
+        public event Action ActionTaken;
 
         public PlayerService(IPlayerModel playerModel, IInputService inputService, IPlayerModel model)
         {
@@ -67,7 +69,7 @@ namespace Builder.Player
 
         private void InputServiceOnActionKeyDown()
         {
-            
+            ActionTaken?.Invoke();
         }
     }
 }

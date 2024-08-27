@@ -4,7 +4,9 @@
     "references": [
         "Builder.Input",
         "Builder.Utility",
-        "VContainer"
+        "VContainer",
+        "Builder.Items",
+        "Builder.Surfaces"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

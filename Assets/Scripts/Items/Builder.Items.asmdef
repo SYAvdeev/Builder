@@ -1,0 +1,17 @@
+{
+    "name": "Builder.Items",
+    "rootNamespace": "Builder.Items",
+    "references": [
+        "Builder.Utility",
+        "Builder.Surfaces"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

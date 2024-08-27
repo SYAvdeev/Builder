@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
 
 namespace Builder.Player
 {
@@ -6,6 +6,9 @@ namespace Builder.Player
     {
         float MoveVelocity { get; }
         float RotateSensitivity { get; }
-        IReadOnlyCollection<string> ItemTags { get; }
+        string ItemTag { get; }
+        string SurfaceTag { get; }
+        float ItemHoldDistance { get; }
+        LayerMask RaycastLayerMask { get; }
     }
 }

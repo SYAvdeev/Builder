@@ -6,8 +6,10 @@ namespace Builder.Player
     {
         [SerializeField] private CharacterController _characterController;
         [SerializeField] private Camera _camera;
+        [SerializeField] private Transform _itemParent;
 
         public CharacterController CharacterController => _characterController;
         public Camera Camera => _camera;
+        public Transform ItemParent => _itemParent;
     }
 }

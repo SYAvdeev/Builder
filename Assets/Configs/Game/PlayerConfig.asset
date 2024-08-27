@@ -14,4 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _moveVelocity: 1
   _rotateSensitivity: 1
-  _itemTags: []
+  _itemTag: Item
+  _itemHoldDistance: 4
+  _raycastLayerMask:
+    serializedVersion: 2
+    m_Bits: 192
+  _surfaceTag: Surface
