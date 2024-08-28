@@ -9,19 +9,14 @@ namespace Builder.Game
 {
     public class GameplayService : IGameplayService
     {
-        private readonly IPlayerService _playerService;
         private readonly IPlayerController _playerController;
         private readonly IUIService _uiService;
         
         private readonly UniTaskRestartable _updateTask;
         private readonly UniTaskRestartable _fixedUpdateTask;
 
-        public GameplayService(
-            IPlayerService playerService, 
-            IPlayerController playerController,
-            IUIService uiService)
+        public GameplayService(IPlayerController playerController, IUIService uiService)
         {
-            _playerService = playerService;
             _playerController = playerController;
             _uiService = uiService;
             
@@ -47,7 +42,7 @@ namespace Builder.Game
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                _playerService.Update();
+                _playerController.Update();
                 
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
             }

@@ -30,6 +30,8 @@ namespace Builder.Player
         public void Dispose()
         {
             _inputService.ActionKeyDown -= InputServiceOnActionKeyDown;
+            _inputService.RotateItemClockwise -= InputServiceOnRotateItemClockwise;
+            _inputService.RotateItemCounterclockwise -= InputServiceOnRotateItemCounterclockwise;
         }
 
         public void Update()

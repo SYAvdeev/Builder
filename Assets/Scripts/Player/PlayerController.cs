@@ -80,6 +80,11 @@ namespace Builder.Player
         public void FixedUpdate(float fixedDeltaTime)
         {
             MoveCharacter(fixedDeltaTime);
+        }
+
+        public void Update()
+        {
+            _playerService.Update();
             Raycast();
         }
 
