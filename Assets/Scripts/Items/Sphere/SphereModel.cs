@@ -2,6 +2,6 @@
 {
     public class SphereModel : ItemModel, ISphereModel
     {
-        public override string TypeName => "Sphere";
+        public override string ItemTypeName => "Sphere";
     }
 }

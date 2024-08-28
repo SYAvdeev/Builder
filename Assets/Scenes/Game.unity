@@ -415,7 +415,7 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   _playerView: {fileID: 2009305489}
-  _itemsCollectionView: {fileID: 695836587}
+  LevelView: {fileID: 695836587}
 --- !u!4 &323920431
 Transform:
   m_ObjectHideFlags: 0
@@ -820,8 +820,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce4977107d134c7eb2ef37603c534ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _surfaceType: 1
   _itemsParent: {fileID: 475528693}
+  _surfaceType: 1
 --- !u!4 &475528693
 Transform:
   m_ObjectHideFlags: 0
@@ -1020,6 +1020,12 @@ MonoBehaviour:
   - {fileID: 1597300644}
   - {fileID: 1698278486}
   - {fileID: 607949046}
+  _surfaceViews:
+  - {fileID: 1963412399}
+  - {fileID: 778148907}
+  - {fileID: 1160481707}
+  - {fileID: 475528692}
+  - {fileID: 1781828851}
 --- !u!4 &695836588
 Transform:
   m_ObjectHideFlags: 0
@@ -1091,8 +1097,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce4977107d134c7eb2ef37603c534ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _surfaceType: 1
   _itemsParent: {fileID: 778148908}
+  _surfaceType: 1
 --- !u!4 &778148908
 Transform:
   m_ObjectHideFlags: 0
@@ -1295,8 +1301,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce4977107d134c7eb2ef37603c534ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _surfaceType: 1
   _itemsParent: {fileID: 1160481708}
+  _surfaceType: 1
 --- !u!4 &1160481708
 Transform:
   m_ObjectHideFlags: 0
@@ -1745,8 +1751,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce4977107d134c7eb2ef37603c534ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _surfaceType: 1
   _itemsParent: {fileID: 1781828852}
+  _surfaceType: 1
 --- !u!4 &1781828852
 Transform:
   m_ObjectHideFlags: 0
@@ -1814,8 +1820,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce4977107d134c7eb2ef37603c534ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _surfaceType: 0
   _itemsParent: {fileID: 1963412400}
+  _surfaceType: 0
 --- !u!4 &1963412400
 Transform:
   m_ObjectHideFlags: 0
@@ -1956,9 +1962,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cfa68907ef4724aeff7de23b169256, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _itemsParent: {fileID: 0}
   _characterController: {fileID: 2009305485}
   _camera: {fileID: 330585545}
-  _itemParent: {fileID: 2009305488}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

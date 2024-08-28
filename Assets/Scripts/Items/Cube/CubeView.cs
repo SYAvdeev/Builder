@@ -1,10 +1,12 @@
-﻿namespace Builder.Items.Cube
+﻿using Builder.Items.ItemStand;
+using UnityEngine;
+
+namespace Builder.Items.Cube
 {
     public class CubeView : ItemView
     {
-        public void OtherCubeInstallRequest(CubeView cubeView)
-        {
-            
-        }
+        [SerializeField] private ItemStandView _itemStandView;
+
+        public ItemStandView ItemStandView => _itemStandView;
     }
 }

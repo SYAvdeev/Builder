@@ -1,5 +1,5 @@
 ﻿using System.Threading;
-using Builder.Items.ItemsCollection;
+using Builder.Items.Level;
 using Builder.Player;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -12,25 +12,25 @@ namespace Builder.Game
         private readonly IPlayerService _playerService;
         private readonly IPlayerController _playerController;
         private readonly IGameplayService _gameplayService;
-        private readonly IItemsCollectionController _itemsCollectionController;
+        private readonly ILevelController _levelController;
 
         public GameSceneStarter(
             IPlayerService playerService,
             IPlayerController playerController,
             IGameplayService gameplayService,
-            IItemsCollectionController itemsCollectionController)
+            ILevelController levelController)
         {
             _playerService = playerService;
             _playerController = playerController;
             _gameplayService = gameplayService;
-            _itemsCollectionController = itemsCollectionController;
+            _levelController = levelController;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation)
         {
             _playerService.Initialize();
             _playerController.Initialize();
-            _itemsCollectionController.InitializeItems();
+            _levelController.InitializeItems();
 
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;

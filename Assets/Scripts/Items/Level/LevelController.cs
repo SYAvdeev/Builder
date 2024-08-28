@@ -2,29 +2,35 @@
 using System.Collections.Generic;
 using Builder.Items.Cube;
 using Builder.Items.Sphere;
+using Builder.Items.Surfaces;
 
-namespace Builder.Items.ItemsCollection
+namespace Builder.Items.Level
 {
-    public class ItemsCollectionController : IItemsCollectionController
+    public class LevelController : ILevelController
     {
-        private readonly ItemsCollectionView _itemsCollectionView;
+        private readonly LevelView _levelView;
         private readonly IItemsConfig _itemsConfig;
+        private readonly ISurfacesConfig _surfacesConfig;
 
         private readonly IList<IItemController> _itemControllers = new List<IItemController>();
 
-        public ItemsCollectionController(ItemsCollectionView itemsCollectionView, IItemsConfig itemsConfig)
+        public LevelController(LevelView levelView, IItemsConfig itemsConfig, ISurfacesConfig surfacesConfig)
         {
-            _itemsCollectionView = itemsCollectionView;
+            _levelView = levelView;
             _itemsConfig = itemsConfig;
+            _surfacesConfig = surfacesConfig;
         }
 
         public void InitializeItems()
         {
-            foreach (var itemView in _itemsCollectionView.ItemViews)
+            foreach (var itemView in _levelView.ItemViews)
             {
                 switch (itemView)
                 {
                     case CubeView cubeView:
+                        var cubeController = new CubeController(cubeView, new CubeModel(), _itemsConfig);
+                        cubeController.Initialize();
+                        _itemControllers.Add(cubeController);
                         break;
                     case SphereView sphereView:
                         var sphereController = new SphereController(sphereView, new SphereModel(), _itemsConfig);
@@ -34,6 +40,15 @@ namespace Builder.Items.ItemsCollection
                     default:
                         throw new ArgumentOutOfRangeException(nameof(itemView));
                 }
+            }
+
+            foreach (var surfaceView in _levelView.SurfaceViews)
+            {
+                var surfaceController = new SurfaceController(
+                    surfaceView,
+                    new SurfaceModel(surfaceView.SurfaceType),
+                    _surfacesConfig);
+                surfaceController.Initialize();
             }
         }
 

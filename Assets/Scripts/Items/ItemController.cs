@@ -1,39 +1,37 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Builder.Surfaces;
+using Builder.Items.ItemStand;
 using UnityEngine;
 
 namespace Builder.Items
 {
     public abstract class ItemController : IItemController
     {
-        private readonly ItemView _itemView;
-        private readonly IItemsConfig _itemsConfig;
+        protected readonly IItemsConfig _itemsConfig;
 
-        private readonly IList<ItemView> _itemViewsInCollision = new List<ItemView>();
-        private readonly IList<SurfaceView> _surfacesInCollision = new List<SurfaceView>();
+        private readonly IList<GameObject> _gameObjectsInCollision = new List<GameObject>();
 
         public IItemModel ItemModel { get; }
+        public ItemView ItemView { get; }
 
         protected ItemController(ItemView itemView, IItemModel itemModel, IItemsConfig itemsConfig)
         {
-            _itemView = itemView;
+            ItemView = itemView;
             ItemModel = itemModel;
             _itemsConfig = itemsConfig;
         }
 
-        public void Initialize()
+        public virtual void Initialize()
         {
-            _itemView.SetItemController(this);
-            _itemView.CollisionEnter += ItemViewOnCollisionEnter;
-            _itemView.CollisionExit += ItemViewOnCollisionExit;
+            ItemView.SetItemController(this);
+            ItemView.CollisionEnter += ItemViewOnCollisionEnter;
+            ItemView.CollisionExit += ItemViewOnCollisionExit;
             ItemModel.CurrentStateChanged += ItemModelOnCurrentStateChanged;
         }
 
         private void ItemModelOnCurrentStateChanged(ItemState itemState)
         {
-            if (ItemModel.CurrentState != ItemState.Dragging &&
-                ItemModel.CurrentState != ItemState.DraggingOnSurface)
+            if (ItemModel.CurrentState != ItemState.DraggingByPlayer &&
+                ItemModel.CurrentState != ItemState.DraggingOnStand)
             {
                 return;
             }
@@ -43,97 +41,69 @@ namespace Builder.Items
 
         private void ItemViewOnCollisionEnter(GameObject gameObject)
         {
-            if (ItemModel.CurrentState is ItemState.Dragging or ItemState.DraggingOnSurface)
+            if (ItemModel.CurrentState is ItemState.DraggingByPlayer or ItemState.DraggingOnStand)
             {
-                if (gameObject.CompareTag(_itemsConfig.ItemTag) &&
-                    gameObject.TryGetComponent<ItemView>(out var itemView))
-                {
-                    if (!_itemViewsInCollision.Contains(itemView))
-                    {
-                        _itemViewsInCollision.Add(itemView);
-                        UpdateDraggingColor();
-                    }
-                }
-                else if (gameObject.CompareTag(_itemsConfig.SurfaceTag) &&
-                         gameObject.TryGetComponent<SurfaceView>(out var surfaceView))
-                {
-                    _surfacesInCollision.Add(surfaceView);
-                    UpdateDraggingColor();
-                }
+                _gameObjectsInCollision.Add(gameObject);
             }
         }
 
         private void ItemViewOnCollisionExit(GameObject gameObject)
         {
-            if (ItemModel.CurrentState is ItemState.Dragging or ItemState.DraggingOnSurface)
+            if (ItemModel.CurrentState is ItemState.DraggingByPlayer or ItemState.DraggingOnStand)
             {
-                if (gameObject.CompareTag(_itemsConfig.ItemTag) &&
-                    gameObject.TryGetComponent<ItemView>(out var itemView))
-                {
-                    _itemViewsInCollision.Remove(itemView);
-                    UpdateDraggingColor();
-                }
-                else if (gameObject.CompareTag(_itemsConfig.SurfaceTag) &&
-                         gameObject.TryGetComponent<SurfaceView>(out var surfaceView))
-                {
-                    _surfacesInCollision.Remove(surfaceView);
-                    UpdateDraggingColor();
-                }
+                _gameObjectsInCollision.Remove(gameObject);
             }
-        }
-
-        public bool CanPutOnSurface(SurfaceType surfaceType)
-        {
-            bool SurfaceTypePredicate(ItemTypesForSurface it) => it.SurfaceType == surfaceType;
-
-            var itemTagsForSurface = _itemsConfig.ItemTagsForSurfaces.First(SurfaceTypePredicate);
-            return itemTagsForSurface.ItemTypes.Contains(_itemView.ItemController.ItemModel.TypeName);
         }
 
         private void UpdateDraggingColor()
         {
-            if (_itemView.MeshRenderer.sharedMaterial != _itemsConfig.ItemInFocusMaterial)
+            if (ItemView.MeshRenderer.sharedMaterial != _itemsConfig.ItemInFocusMaterial)
             {
                 return;
             }
             
             bool allowedToPut = AllowedToPut();
 
-            _itemView.MeshRenderer.sharedMaterial.color = allowedToPut ?
+            ItemView.MeshRenderer.sharedMaterial.color = allowedToPut ?
                 _itemsConfig.AllowedColor : _itemsConfig.ForbiddenColor;
-            
-            Debug.Log($"UpdateDraggingColor(), allowedToPut = {allowedToPut}, Color = {_itemView.MeshRenderer.sharedMaterial.color.ToString()}");
         }
 
         private bool AllowedToPut()
         {
             bool allowedToPut = false;
-            if (ItemModel.CurrentState == ItemState.DraggingOnSurface && _itemViewsInCollision.Count == 0)
+            if (ItemModel.CurrentState == ItemState.DraggingOnStand)
             {
-                if (_surfacesInCollision.Count == 0 ||
-                    (_surfacesInCollision.Count == 1 &&
-                     _surfacesInCollision[0].ItemsParent == _itemView.transform.parent))
+                if (_gameObjectsInCollision.Count == 0)
                 {
                     allowedToPut = true;
+                }
+                else if (_gameObjectsInCollision.Count == 1 &&
+                         _gameObjectsInCollision[0].TryGetComponent<ItemStandView>(out var itemStandView))
+                {
+                    if (itemStandView.ItemsParent == ItemView.transform.parent)
+                    {
+                        allowedToPut = true;
+                    }
                 }
             }
 
             return allowedToPut;
         }
 
-        public void PutOnObject(Transform parent, Vector3 pivotPoint, bool isSurface)
+        public void OnPutOnStand(string standTypeName)
         {
-            _itemView.transform.SetParent(parent);
-            _itemView.transform.localRotation = Quaternion.Euler(0f, ItemModel.CurrentRotation, 0f);
-            _itemView.transform.position = pivotPoint;
-            _itemView.transform.localPosition -= _itemView.InstallationPivot.localPosition;
-            ItemModel.SetCurrentState(isSurface ? ItemState.DraggingOnSurface : ItemState.Dragging);
+            ItemView.transform.localRotation = Quaternion.Euler(0f, ItemModel.CurrentRotation, 0f);
+            ItemView.transform.localPosition -= ItemView.InstallationPivot.localPosition;
+
+            bool isPlayer = standTypeName == _itemsConfig.PlayerItemStandName;
+
+            ItemModel.SetCurrentState(isPlayer ? ItemState.DraggingByPlayer : ItemState.DraggingOnStand);
         }
 
-        public void SetInFocus()
+        public virtual void SetInFocus()
         {
             var inFocusMaterial = _itemsConfig.ItemInFocusMaterial;
-            _itemView.MeshRenderer.sharedMaterial = inFocusMaterial;
+            ItemView.MeshRenderer.sharedMaterial = inFocusMaterial;
             inFocusMaterial.color = _itemsConfig.AllowedColor;
             ItemModel.SetCurrentState(ItemState.InFocus);
         }
@@ -141,39 +111,38 @@ namespace Builder.Items
         public void RemoveFromFocus()
         {
             var material = _itemsConfig.ItemsMaterial;
-            _itemView.MeshRenderer.sharedMaterial = material;
+            ItemView.MeshRenderer.sharedMaterial = material;
             ItemModel.SetCurrentState(ItemState.Inactive);
         }
 
         public virtual bool RequestDrag()
         {
-            bool canDrag = ItemModel.CurrentState == ItemState.InFocus;
-
-            if (canDrag)
+            if (ItemModel.CurrentState != ItemState.InFocus)
             {
-                _itemView.gameObject.layer = LayerMask.NameToLayer(_itemsConfig.DraggingItemsLayerName);
-                ItemModel.SetCurrentState(ItemState.Dragging);
+                return false;
             }
-            
-            return canDrag;
+
+            ItemView.gameObject.layer = LayerMask.NameToLayer(_itemsConfig.DraggingItemsLayerName);
+            ItemModel.SetCurrentState(ItemState.DraggingByPlayer);
+            return true;
         }
 
         public bool RequestPut()
         {
-            if (AllowedToPut())
+            if (!AllowedToPut())
             {
-                _itemView.gameObject.layer = LayerMask.NameToLayer(_itemsConfig.InactiveItemsLayerName);
-                _itemViewsInCollision.Clear();
-                return true;
+                return false;
             }
 
-            return false;
+            ItemView.gameObject.layer = LayerMask.NameToLayer(_itemsConfig.InactiveItemsLayerName);
+            _gameObjectsInCollision.Clear();
+            return true;
         }
 
         public void Dispose()
         {
-            _itemView.CollisionEnter -= ItemViewOnCollisionEnter;
-            _itemView.CollisionExit -= ItemViewOnCollisionExit;
+            ItemView.CollisionEnter -= ItemViewOnCollisionEnter;
+            ItemView.CollisionExit -= ItemViewOnCollisionExit;
             ItemModel.CurrentStateChanged += ItemModelOnCurrentStateChanged;
         }
     }

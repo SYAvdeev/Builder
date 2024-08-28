@@ -17,13 +17,8 @@ MonoBehaviour:
   _itemsMaterial: {fileID: 2100000, guid: 0aecdb923afed124e94baf53b2c1be37, type: 2}
   _itemInFocusMaterial: {fileID: 2100000, guid: a92c0ce4f15b2584aa97bd589bc6af39,
     type: 2}
-  _itemTagsForSurfaces:
-  - SurfaceType: 0
-    ItemTypes:
-    - Cube
-  - SurfaceType: 1
-    ItemTypes:
-    - Sphere
   _itemTag: Item
   _draggingItemsLayerName: DraggingItem
   _inactiveItemsLayerName: Item
+  _surfaceTag: Surface
+  _playerItemStandName: Player

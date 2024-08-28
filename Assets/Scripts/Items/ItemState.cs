@@ -4,7 +4,7 @@
     {
         Inactive,
         InFocus,
-        Dragging,
-        DraggingOnSurface
+        DraggingByPlayer,
+        DraggingOnStand
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Builder.Surfaces
+﻿namespace Builder.Items.Surfaces
 {
     public enum SurfaceType
     {

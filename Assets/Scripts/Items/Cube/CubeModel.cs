@@ -2,7 +2,7 @@
 {
     public class CubeModel : ItemModel, ICubeModel
     {
-        public bool HasCubeInstalled { get; }
-        public override string TypeName => "Cube";
+        public override string ItemTypeName => "Cube";
+        public string ItemStandTypeName => ItemTypeName;
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Builder.Items
 {
@@ -13,6 +12,6 @@ namespace Builder.Items
         string DraggingItemsLayerName { get; }
         string ItemTag { get; }
         string SurfaceTag { get; }
-        public IReadOnlyCollection<ItemTypesForSurface> ItemTagsForSurfaces { get; }
+        string PlayerItemStandName { get; }
     }
 }

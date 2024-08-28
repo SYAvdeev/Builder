@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Builder.Utility;
+﻿using Builder.Utility;
 using UnityEngine;
 
 namespace Builder.Items
@@ -14,11 +13,11 @@ namespace Builder.Items
         [SerializeField] private Color _forbiddenColor;
         [SerializeField] private Material _itemsMaterial;
         [SerializeField] private Material _itemInFocusMaterial;
-        [SerializeField] private List<ItemTypesForSurface> _itemTagsForSurfaces;
         [SerializeField] private string _itemTag;
         [SerializeField] private string _draggingItemsLayerName;
         [SerializeField] private string _inactiveItemsLayerName;
         [SerializeField] private string _surfaceTag;
+        [SerializeField] private string _playerItemStandName;
 
         public Color AllowedColor => _allowedColor;
 
@@ -36,6 +35,6 @@ namespace Builder.Items
 
         public string SurfaceTag => _surfaceTag;
 
-        public IReadOnlyCollection<ItemTypesForSurface> ItemTagsForSurfaces => _itemTagsForSurfaces;
+        public string PlayerItemStandName => _playerItemStandName;
     }
 }

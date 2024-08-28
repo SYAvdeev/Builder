@@ -9,6 +9,6 @@ namespace Builder.Items
         ItemState CurrentState { get; }
         internal void SetCurrentState(ItemState itemState);
         event Action<ItemState> CurrentStateChanged;
-        string TypeName { get; }
+        string ItemTypeName { get; }
     }
 }

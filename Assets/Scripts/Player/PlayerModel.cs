@@ -43,5 +43,7 @@ namespace Builder.Player
         {
             CurrentState = playerState;
         }
+
+        public string ItemStandTypeName => "Player";
     }
 }

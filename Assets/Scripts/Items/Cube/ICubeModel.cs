@@ -1,7 +1,9 @@
-﻿namespace Builder.Items.Cube
+﻿using Builder.Items.ItemStand;
+
+namespace Builder.Items.Cube
 {
-    public interface ICubeModel : IItemModel
+    public interface ICubeModel : IItemModel, IItemStandModel
     {
-        bool HasCubeInstalled { get; }
+        
     }
 }

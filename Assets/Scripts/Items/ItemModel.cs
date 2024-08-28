@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Builder.Items
 {
@@ -8,6 +9,11 @@ namespace Builder.Items
         
         void IItemModel.SetCurrentRotation(float rotation)
         {
+            if (Mathf.Approximately(CurrentRotation, rotation))
+            {
+                return;
+            }
+            
             CurrentRotation = rotation;
         }
 
@@ -26,6 +32,6 @@ namespace Builder.Items
 
         public event Action<ItemState> CurrentStateChanged;
 
-        public abstract string TypeName { get; }
+        public abstract string ItemTypeName { get; }
     }
 }

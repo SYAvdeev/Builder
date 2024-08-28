@@ -1,6 +1,7 @@
-﻿using Builder.Items.ItemsCollection;
+﻿using Builder.Items.Level;
 using Builder.Player;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VContainer;
 using VContainer.Unity;
 
@@ -9,7 +10,7 @@ namespace Builder.Game
     public class GameLifetimeScope : LifetimeScope
     {
         [SerializeField] private PlayerView _playerView;
-        [SerializeField] private ItemsCollectionView _itemsCollectionView;
+        [FormerlySerializedAs("_itemsCollectionView")] [SerializeField] private LevelView LevelView;
         
         protected override void Configure(IContainerBuilder builder)
         {
@@ -29,8 +30,8 @@ namespace Builder.Game
 
         private void ConfigureItems(IContainerBuilder builder)
         {
-            builder.RegisterInstance(_itemsCollectionView);
-            builder.Register<ItemsCollectionController>(Lifetime.Scoped).As<IItemsCollectionController>();
+            builder.RegisterInstance(LevelView);
+            builder.Register<LevelController>(Lifetime.Scoped).As<ILevelController>();
         }
 
         private void ConfigureGameplay(IContainerBuilder builder)

@@ -1,9 +1,10 @@
 ﻿using System;
+using Builder.Items.ItemStand;
 using UnityEngine;
 
 namespace Builder.Player
 {
-    public interface IPlayerModel
+    public interface IPlayerModel : IItemStandModel
     {
         IPlayerConfig Config { get; }
         Vector3 CurrentMovement { get; }

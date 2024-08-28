@@ -1,18 +1,19 @@
 ﻿using System;
 using Builder.Items;
-using Builder.Surfaces;
+using Builder.Items.ItemStand;
 using UnityEngine;
 
 namespace Builder.Player
 {
-    public class PlayerController : IPlayerController
+    public class PlayerController : ItemStandController, IPlayerController
     {
         private readonly PlayerView _playerView;
         private readonly IPlayerService _playerService;
 
         private IItemController _currentItemInFocus;
 
-        public PlayerController(PlayerView playerView, IPlayerService playerService)
+        public PlayerController(PlayerView playerView, IPlayerService playerService) :
+            base(playerView, playerService.Model)
         {
             _playerView = playerView;
             _playerService = playerService;
@@ -54,13 +55,12 @@ namespace Builder.Player
 
         public void FixedUpdate(float fixedDeltaTime)
         {
-            var modelCurrentMovement = _playerService.Model.CurrentMovement;
+            MoveCharacter(fixedDeltaTime);
+            Raycast();
+        }
 
-            var characterMovement = _playerView.transform.forward * modelCurrentMovement.x +
-                                    _playerView.transform.right * modelCurrentMovement.z;
-            
-            _playerView.CharacterController.Move(characterMovement * fixedDeltaTime);
-            
+        private void Raycast()
+        {
             var cameraTransform = _playerView.Camera.transform;
             var playerConfig = _playerService.Model.Config;
             
@@ -103,30 +103,55 @@ namespace Builder.Player
                     break;
                 case PlayerState.Building:
 
-                    Transform parent = _playerView.ItemParent;
-                    Vector3 position = cameraTransform.position +
-                                       (playerConfig.ItemHoldDistance * cameraTransform.forward);
-                    bool isSurface = false;
-                    
                     if (hitInfo.collider)
                     {
                         var colliderGameObject = hitInfo.collider.gameObject;
-                        if (colliderGameObject.CompareTag(playerConfig.SurfaceTag) &&
-                            colliderGameObject.TryGetComponent<SurfaceView>(out var surfaceView) &&
-                            _currentItemInFocus.CanPutOnSurface(surfaceView.SurfaceType))
+                        if ((colliderGameObject.CompareTag(playerConfig.SurfaceTag) ||
+                             colliderGameObject.CompareTag(playerConfig.ItemTag)))
                         {
-                            parent = surfaceView.ItemsParent;
-                            position = hitInfo.point;
-                            isSurface = true;
+                            if (colliderGameObject.TryGetComponent<ItemStandView>(out var itemStandView))
+                            {
+                                if (itemStandView.ItemStandController.CanPutItem(_currentItemInFocus))
+                                {
+                                    itemStandView.ItemStandController.PutItem(_currentItemInFocus, hitInfo.point);
+                                    break;
+                                }
+                            }
                         }
                     }
 
-                    _currentItemInFocus.PutOnObject(parent, position, isSurface);
+                    Vector3 position = cameraTransform.position +
+                                       (playerConfig.ItemHoldDistance * cameraTransform.forward);
+                    
+                    PutItem(_currentItemInFocus, position);
                     
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        private void MoveCharacter(float fixedDeltaTime)
+        {
+            var modelCurrentMovement = _playerService.Model.CurrentMovement;
+
+            var characterMovement = _playerView.transform.forward * modelCurrentMovement.x +
+                                    _playerView.transform.right * modelCurrentMovement.z;
+            
+            _playerView.CharacterController.Move(characterMovement * fixedDeltaTime);
+        }
+
+        public override bool CanPutItem(IItemController itemController) => _currentItemInFocus == null;
+
+        public override void PutItem(IItemController itemController, Vector3 position)
+        {
+            base.PutItem(itemController, position);
+            _currentItemInFocus = itemController;
+        }
+
+        public override void RemoveCurrentItem()
+        {
+            _currentItemInFocus = null;
         }
 
         public void Dispose()
