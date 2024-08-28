@@ -74,15 +74,10 @@ namespace Builder.Items
 
         private void UpdateDraggingColor()
         {
-            if (ItemView.MeshRenderer.sharedMaterial != _itemsConfig.ItemInFocusMaterial)
-            {
-                return;
-            }
-            
             bool allowedToPut = AllowedToPut();
 
-            ItemView.MeshRenderer.sharedMaterial.color = allowedToPut ?
-                _itemsConfig.AllowedColor : _itemsConfig.ForbiddenColor;
+            ItemView.MeshRenderer.sharedMaterial = allowedToPut ?
+                _itemsConfig.AllowedMaterial : _itemsConfig.ForbiddenMaterial;
         }
 
         private bool AllowedToPut()
@@ -119,16 +114,13 @@ namespace Builder.Items
 
         public virtual void SetInFocus()
         {
-            var inFocusMaterial = _itemsConfig.ItemInFocusMaterial;
-            ItemView.MeshRenderer.sharedMaterial = inFocusMaterial;
-            inFocusMaterial.color = _itemsConfig.AllowedColor;
+            ItemView.MeshRenderer.sharedMaterial = _itemsConfig.AllowedMaterial;
             ItemModel.SetCurrentState(ItemState.InFocus);
         }
 
         public void RemoveFromFocus()
         {
-            var material = _itemsConfig.ItemsMaterial;
-            ItemView.MeshRenderer.sharedMaterial = material;
+            ItemView.MeshRenderer.sharedMaterial = _itemsConfig.NeutralMaterial;
             ItemModel.SetCurrentState(ItemState.Inactive);
         }
 

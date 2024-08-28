@@ -4,10 +4,9 @@ namespace Builder.Items
 {
     public interface IItemsConfig
     {
-        Color AllowedColor { get; }
-        Color ForbiddenColor { get; }
-        Material ItemsMaterial { get; }
-        Material ItemInFocusMaterial { get; }
+        Material NeutralMaterial { get; }
+        Material AllowedMaterial { get; }
+        Material ForbiddenMaterial { get; }
         string InactiveItemsLayerName { get; }
         string DraggingItemsLayerName { get; }
         string PlayerItemStandName { get; }

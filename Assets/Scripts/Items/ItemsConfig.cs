@@ -9,22 +9,19 @@ namespace Builder.Items
         order = 1)]
     public class ItemsConfig : ConfigBase, IItemsConfig
     {
-        [SerializeField] private Color _allowedColor;
-        [SerializeField] private Color _forbiddenColor;
-        [SerializeField] private Material _itemsMaterial;
-        [SerializeField] private Material _itemInFocusMaterial;
+        [SerializeField] private Material _neutralMaterial;
+        [SerializeField] private Material _allowedMaterial;
+        [SerializeField] private Material _forbiddenMaterial;
         [SerializeField] private string _draggingItemsLayerName;
         [SerializeField] private string _inactiveItemsLayerName;
         [SerializeField] private string _playerItemStandName;
         [SerializeField] private float _rotationDelta;
 
-        public Color AllowedColor => _allowedColor;
+        public Material NeutralMaterial => _neutralMaterial;
 
-        public Color ForbiddenColor => _forbiddenColor;
+        public Material AllowedMaterial => _allowedMaterial;
 
-        public Material ItemsMaterial => _itemsMaterial;
-
-        public Material ItemInFocusMaterial => _itemInFocusMaterial;
+        public Material ForbiddenMaterial => _forbiddenMaterial;
 
         public string InactiveItemsLayerName => _inactiveItemsLayerName;
 

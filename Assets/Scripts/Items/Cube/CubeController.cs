@@ -23,10 +23,10 @@ namespace Builder.Items.Cube
 
         public override void SetInFocus()
         {
-            var inFocusMaterial = _itemsConfig.ItemInFocusMaterial;
-            ItemView.MeshRenderer.sharedMaterial = inFocusMaterial;
             ItemModel.SetCurrentState(ItemState.InFocus);
-            inFocusMaterial.color = AllowedToDrag ? _itemsConfig.AllowedColor : _itemsConfig.ForbiddenColor;
+            ItemView.MeshRenderer.sharedMaterial = AllowedToDrag ?
+                _itemsConfig.AllowedMaterial :
+                _itemsConfig.ForbiddenMaterial;
         }
 
         public override bool RequestDrag()
