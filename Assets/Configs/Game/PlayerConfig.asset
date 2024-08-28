@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e67fd484737140f9a3101fa5f4880486, type: 3}
   m_Name: PlayerConfig
   m_EditorClassIdentifier: 
-  _moveVelocity: 1
-  _rotateSensitivity: 1
+  _moveVelocity: 4
+  _rotateSensitivity: 2
   _itemTag: Item
   _itemHoldDistance: 4
   _raycastLayerMask:
