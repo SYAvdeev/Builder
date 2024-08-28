@@ -12,5 +12,7 @@ namespace Builder.Input
         float RotateHorizontalAmount { get; }
         float RotateVerticalAmount { get; }
         event Action ActionKeyDown;
+        event Action RotateItemClockwise;
+        event Action RotateItemCounterclockwise;
     }
 }

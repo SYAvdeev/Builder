@@ -10,6 +10,7 @@ namespace Builder.Items
         public void RemoveFromFocus();
         bool RequestDrag();
         bool RequestPut();
+        void Rotate(bool isClockwise);
         IItemModel ItemModel { get; }
         ItemView ItemView { get; }
     }

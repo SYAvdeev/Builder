@@ -18,7 +18,9 @@ namespace Builder.Input
         public float RotateHorizontalAmount { get; private set; }
         public float RotateVerticalAmount { get; private set; }
         public event Action ActionKeyDown;
-        
+        public event Action RotateItemClockwise;
+        public event Action RotateItemCounterclockwise;
+
         public void Tick()
         {
             IsMoveForwardPressed = UnityEngine.Input.GetKey(_inputConfig.MoveForwardKey);
@@ -31,6 +33,15 @@ namespace Builder.Input
             if (UnityEngine.Input.GetKeyDown(_inputConfig.ActionKey))
             {
                 ActionKeyDown?.Invoke();
+            }
+            
+            if (UnityEngine.Input.mouseScrollDelta.y > 0f)
+            {
+                RotateItemClockwise?.Invoke();
+            }
+            else if (UnityEngine.Input.mouseScrollDelta.y < 0f)
+            {
+                RotateItemCounterclockwise?.Invoke();
             }
         }
     }

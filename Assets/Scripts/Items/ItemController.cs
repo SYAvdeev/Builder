@@ -11,6 +11,7 @@ namespace Builder.Items
         private readonly IList<GameObject> _gameObjectsInCollision = new List<GameObject>();
 
         public IItemModel ItemModel { get; }
+
         public ItemView ItemView { get; }
 
         protected ItemController(ItemView itemView, IItemModel itemModel, IItemsConfig itemsConfig)
@@ -26,6 +27,20 @@ namespace Builder.Items
             ItemView.CollisionEnter += ItemViewOnCollisionEnter;
             ItemView.CollisionExit += ItemViewOnCollisionExit;
             ItemModel.CurrentStateChanged += ItemModelOnCurrentStateChanged;
+            ItemModel.CurrentRotationChanged += ItemModelOnCurrentRotationChanged;
+        }
+
+        public void Rotate(bool isClockwise)
+        {
+            float rotation = isClockwise
+                ? ItemModel.CurrentRotation + _itemsConfig.RotationDelta
+                : ItemModel.CurrentRotation - _itemsConfig.RotationDelta;
+            ItemModel.SetCurrentRotation(rotation);
+        }
+
+        private void ItemModelOnCurrentRotationChanged(float rotation)
+        {
+            ItemView.transform.localRotation = Quaternion.Euler(0f, rotation, 0f);
         }
 
         private void ItemModelOnCurrentStateChanged(ItemState itemState)
@@ -145,7 +160,8 @@ namespace Builder.Items
         {
             ItemView.CollisionEnter -= ItemViewOnCollisionEnter;
             ItemView.CollisionExit -= ItemViewOnCollisionExit;
-            ItemModel.CurrentStateChanged += ItemModelOnCurrentStateChanged;
+            ItemModel.CurrentStateChanged -= ItemModelOnCurrentStateChanged;
+            ItemModel.CurrentRotationChanged -= ItemModelOnCurrentRotationChanged;
         }
     }
 }

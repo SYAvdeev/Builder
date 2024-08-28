@@ -15,7 +15,10 @@ namespace Builder.Items
             }
             
             CurrentRotation = rotation;
+            CurrentRotationChanged?.Invoke(rotation);
         }
+
+        public event Action<float> CurrentRotationChanged;
 
         public ItemState CurrentState { get; private set; } = ItemState.Inactive;
         

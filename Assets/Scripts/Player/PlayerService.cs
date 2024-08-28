@@ -10,6 +10,8 @@ namespace Builder.Player
         private readonly IInputService _inputService;
         public IPlayerModel Model { get; }
         public event Action ActionTaken;
+        public event Action ItemRotatedClockwise;
+        public event Action ItemRotatedCounterclockwise;
 
         public PlayerService(IPlayerModel playerModel, IInputService inputService, IPlayerModel model)
         {
@@ -21,6 +23,8 @@ namespace Builder.Player
         public void Initialize()
         {
             _inputService.ActionKeyDown += InputServiceOnActionKeyDown;
+            _inputService.RotateItemClockwise += InputServiceOnRotateItemClockwise;
+            _inputService.RotateItemCounterclockwise += InputServiceOnRotateItemCounterclockwise;
         }
 
         public void Dispose()
@@ -70,6 +74,16 @@ namespace Builder.Player
         private void InputServiceOnActionKeyDown()
         {
             ActionTaken?.Invoke();
+        }
+
+        private void InputServiceOnRotateItemClockwise()
+        {
+            ItemRotatedClockwise?.Invoke();
+        }
+
+        private void InputServiceOnRotateItemCounterclockwise()
+        {
+            ItemRotatedCounterclockwise?.Invoke();
         }
     }
 }

@@ -11,6 +11,7 @@ namespace Builder.Player
         private readonly IPlayerService _playerService;
 
         private IItemController _currentItemInFocus;
+        private IItemStandController _currentItemStandInFocus;
 
         public PlayerController(PlayerView playerView, IPlayerService playerService) :
             base(playerView, playerService.Model)
@@ -19,10 +20,23 @@ namespace Builder.Player
             _playerService = playerService;
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
+            base.Initialize();
             _playerService.Model.CurrentRotationChanged += ModelOnCurrentRotationChanged;
             _playerService.ActionTaken += PlayerServiceOnActionTaken;
+            _playerService.ItemRotatedClockwise += PlayerServiceOnItemRotatedClockwise;
+            _playerService.ItemRotatedCounterclockwise += PlayerServiceOnItemRotatedCounterclockwise;
+        }
+
+        private void PlayerServiceOnItemRotatedClockwise()
+        {
+            _currentItemInFocus?.Rotate(true);
+        }
+
+        private void PlayerServiceOnItemRotatedCounterclockwise()
+        {
+            _currentItemInFocus?.Rotate(false);
         }
 
         private void PlayerServiceOnActionTaken()
@@ -111,15 +125,37 @@ namespace Builder.Player
                         {
                             if (colliderGameObject.TryGetComponent<ItemStandView>(out var itemStandView))
                             {
-                                if (itemStandView.ItemStandController.CanPutItem(_currentItemInFocus))
+                                if (_currentItemStandInFocus != null)
                                 {
-                                    itemStandView.ItemStandController.PutItem(_currentItemInFocus, hitInfo.point);
-                                    break;
+                                    if (_currentItemStandInFocus == itemStandView.ItemStandController)
+                                    {
+                                        itemStandView.ItemStandController.PutItem(_currentItemInFocus, hitInfo.point);
+                                        break;
+                                    }
+                                    
+                                    if (itemStandView.ItemStandController.CanPutItem(_currentItemInFocus))
+                                    {
+                                        _currentItemStandInFocus = itemStandView.ItemStandController;
+                                        itemStandView.ItemStandController.PutItem(_currentItemInFocus, hitInfo.point);
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    if (itemStandView.ItemStandController.CanPutItem(_currentItemInFocus))
+                                    {
+                                        _currentItemStandInFocus = itemStandView.ItemStandController;
+                                        itemStandView.ItemStandController.PutItem(_currentItemInFocus, hitInfo.point);
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
 
+                    _currentItemStandInFocus?.RemoveCurrentItem();
+                    _currentItemStandInFocus = null;
+                    
                     Vector3 position = cameraTransform.position +
                                        (playerConfig.ItemHoldDistance * cameraTransform.forward);
                     
@@ -158,6 +194,8 @@ namespace Builder.Player
         {
             _playerService.Model.CurrentRotationChanged -= ModelOnCurrentRotationChanged;
             _playerService.ActionTaken -= PlayerServiceOnActionTaken;
+            _playerService.ItemRotatedClockwise -= PlayerServiceOnItemRotatedClockwise;
+            _playerService.ItemRotatedCounterclockwise -= PlayerServiceOnItemRotatedCounterclockwise;
         }
     }
 }

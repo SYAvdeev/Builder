@@ -13,7 +13,7 @@ namespace Builder.Items.Cube
         private ICubeModel CubeModel => (ICubeModel)ItemModel;
         private CubeView CubeView => (CubeView)ItemView;
 
-        private bool AllowedToDrag => _currentInstalledCube == null;
+        private bool AllowedToDrag => _currentInstalledCube == null && ItemModel.CurrentState == ItemState.InFocus;
 
         public override void Initialize()
         {
@@ -25,13 +25,13 @@ namespace Builder.Items.Cube
         {
             var inFocusMaterial = _itemsConfig.ItemInFocusMaterial;
             ItemView.MeshRenderer.sharedMaterial = inFocusMaterial;
-            inFocusMaterial.color = AllowedToDrag ? _itemsConfig.AllowedColor : _itemsConfig.ForbiddenColor;
             ItemModel.SetCurrentState(ItemState.InFocus);
+            inFocusMaterial.color = AllowedToDrag ? _itemsConfig.AllowedColor : _itemsConfig.ForbiddenColor;
         }
 
         public override bool RequestDrag()
         {
-            if (AllowedToDrag && ItemModel.CurrentState != ItemState.InFocus)
+            if (!AllowedToDrag)
             {
                 return false;
             }
@@ -51,12 +51,32 @@ namespace Builder.Items.Cube
             itemController.ItemView.transform.SetParent(CubeView.ItemStandView.ItemsParent);
             itemController.ItemView.transform.position = CubeView.ItemStandView.ItemsParent.position;
             itemController.OnPutOnStand(CubeModel.ItemStandTypeName);
+
+            if (_currentInstalledCube == itemController)
+            {
+                return;
+            }
             
             _currentInstalledCube = (CubeController)itemController;
+            itemController.ItemModel.CurrentStateChanged += ItemModelOnCurrentStateChanged;
+        }
+
+        private void ItemModelOnCurrentStateChanged(ItemState itemState)
+        {
+            if (itemState == ItemState.DraggingByPlayer)
+            {
+                RemoveCurrentItem();
+            }
         }
 
         public void RemoveCurrentItem()
         {
+            if (_currentInstalledCube == null)
+            {
+                return;
+            }
+            
+            _currentInstalledCube.ItemModel.CurrentStateChanged -= ItemModelOnCurrentStateChanged;
             _currentInstalledCube = null;
         }
     }

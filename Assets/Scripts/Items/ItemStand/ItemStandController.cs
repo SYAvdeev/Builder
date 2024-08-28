@@ -13,7 +13,7 @@ namespace Builder.Items.ItemStand
             _itemStandModel = itemStandModel;
         }
 
-        public void Initialize()
+        public virtual void Initialize()
         {
             _itemStandView.SetItemStandController(this);
         }

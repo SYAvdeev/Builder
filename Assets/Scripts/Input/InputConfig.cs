@@ -16,7 +16,6 @@ namespace Builder.Input
         [SerializeField] private KeyCode _actionKey;
         [SerializeField] private string _rotateHorizontalAxis;
         [SerializeField] private string _rotateVerticalAxis;
-        [SerializeField] private float _rotateSensitivity;
 
         public KeyCode MoveForwardKey => _moveForwardKey;
 
@@ -29,8 +28,6 @@ namespace Builder.Input
         public string RotateHorizontalAxis => _rotateHorizontalAxis;
 
         public string RotateVerticalAxis => _rotateVerticalAxis;
-
-        public float RotateSensitivity => _rotateSensitivity;
 
         public KeyCode ActionKey => _actionKey;
     }

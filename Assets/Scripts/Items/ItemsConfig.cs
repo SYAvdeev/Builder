@@ -13,11 +13,10 @@ namespace Builder.Items
         [SerializeField] private Color _forbiddenColor;
         [SerializeField] private Material _itemsMaterial;
         [SerializeField] private Material _itemInFocusMaterial;
-        [SerializeField] private string _itemTag;
         [SerializeField] private string _draggingItemsLayerName;
         [SerializeField] private string _inactiveItemsLayerName;
-        [SerializeField] private string _surfaceTag;
         [SerializeField] private string _playerItemStandName;
+        [SerializeField] private float _rotationDelta;
 
         public Color AllowedColor => _allowedColor;
 
@@ -31,10 +30,8 @@ namespace Builder.Items
 
         public string DraggingItemsLayerName => _draggingItemsLayerName;
 
-        public string ItemTag => _itemTag;
-
-        public string SurfaceTag => _surfaceTag;
-
         public string PlayerItemStandName => _playerItemStandName;
+
+        public float RotationDelta => _rotationDelta;
     }
 }

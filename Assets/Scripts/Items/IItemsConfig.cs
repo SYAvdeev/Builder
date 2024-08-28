@@ -10,8 +10,7 @@ namespace Builder.Items
         Material ItemInFocusMaterial { get; }
         string InactiveItemsLayerName { get; }
         string DraggingItemsLayerName { get; }
-        string ItemTag { get; }
-        string SurfaceTag { get; }
         string PlayerItemStandName { get; }
+        float RotationDelta { get; }
     }
 }
