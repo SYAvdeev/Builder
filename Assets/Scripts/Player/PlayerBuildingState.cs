@@ -17,8 +17,8 @@ namespace Builder.Player
             if (hitInfo.collider)
             {
                 var colliderGameObject = hitInfo.collider.gameObject;
-                if ((colliderGameObject.CompareTag(playerConfig.SurfaceTag) ||
-                     colliderGameObject.CompareTag(playerConfig.ItemTag)))
+                if (colliderGameObject.CompareTag(playerConfig.SurfaceTag) ||
+                     colliderGameObject.CompareTag(playerConfig.ItemTag))
                 {
                     if (colliderGameObject.TryGetComponent<ItemStandView>(out var itemStandView))
                     {

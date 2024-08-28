@@ -32,7 +32,7 @@ namespace Builder.Player
             _inputService.ActionKeyDown -= InputServiceOnActionKeyDown;
         }
 
-        public void Update(float deltaTime)
+        public void Update()
         {
             float forwardMovementAmount = _playerModel.Config.MoveVelocity;
             float sideMovementAmount = _playerModel.Config.MoveVelocity;

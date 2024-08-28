@@ -21,10 +21,10 @@ namespace Builder.Items.Surfaces
 
         public override bool CanPutItem(IItemController itemController)
         {
-            bool SurfaceTypePredicate(ItemTypesForSurface it) => it.SurfaceType == _surfaceView.SurfaceType;
-
             var itemTagsForSurface = _surfacesConfig.ItemTagsForSurfaces.First(SurfaceTypePredicate);
             return itemTagsForSurface.ItemTypes.Contains(itemController.ItemModel.ItemTypeName);
+
+            bool SurfaceTypePredicate(ItemTypesForSurface it) => it.SurfaceType == _surfaceView.SurfaceType;
         }
 
         public override void RemoveCurrentItem() { }

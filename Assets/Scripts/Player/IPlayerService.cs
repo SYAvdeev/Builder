@@ -9,6 +9,6 @@ namespace Builder.Player
         event Action ItemRotatedCounterclockwise;
         void Initialize();
         IPlayerModel Model { get; }
-        void Update(float deltaTime);
+        void Update();
     }
 }

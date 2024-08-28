@@ -43,10 +43,9 @@ namespace Builder.Game
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                float deltaTime = Time.deltaTime;
                 float fixedDeltaTime = Time.fixedDeltaTime;
 
-                _playerService.Update(deltaTime);
+                _playerService.Update();
                 _playerController.FixedUpdate(fixedDeltaTime);
                 
                 await UniTask.Yield(cancellationToken);
