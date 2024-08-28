@@ -44,6 +44,7 @@ namespace Builder.Items
             if (ItemModel.CurrentState is ItemState.DraggingByPlayer or ItemState.DraggingOnStand)
             {
                 _gameObjectsInCollision.Add(gameObject);
+                UpdateDraggingColor();
             }
         }
 
@@ -52,6 +53,7 @@ namespace Builder.Items
             if (ItemModel.CurrentState is ItemState.DraggingByPlayer or ItemState.DraggingOnStand)
             {
                 _gameObjectsInCollision.Remove(gameObject);
+                UpdateDraggingColor();
             }
         }
 
