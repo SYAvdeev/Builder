@@ -11,6 +11,7 @@ namespace Builder.Items
         private readonly IItemsConfig _itemsConfig;
 
         private readonly IList<ItemView> _itemViewsInCollision = new List<ItemView>();
+        private readonly IList<SurfaceView> _surfacesInCollision = new List<SurfaceView>();
 
         public IItemModel ItemModel { get; }
 
@@ -26,19 +27,23 @@ namespace Builder.Items
             _itemView.SetItemController(this);
             _itemView.CollisionEnter += ItemViewOnCollisionEnter;
             _itemView.CollisionExit += ItemViewOnCollisionExit;
+            ItemModel.CurrentStateChanged += ItemModelOnCurrentStateChanged;
         }
 
-        public bool CanPutOnSurface(SurfaceType surfaceType)
+        private void ItemModelOnCurrentStateChanged(ItemState itemState)
         {
-            bool SurfaceTypePredicate(ItemTypesForSurface it) => it.SurfaceType == surfaceType;
-
-            var itemTagsForSurface = _itemsConfig.ItemTagsForSurfaces.First(SurfaceTypePredicate);
-            return itemTagsForSurface.ItemTypes.Contains(_itemView.ItemController.ItemModel.TypeName);
+            if (ItemModel.CurrentState != ItemState.Dragging &&
+                ItemModel.CurrentState != ItemState.DraggingOnSurface)
+            {
+                return;
+            }
+            
+            UpdateDraggingColor();
         }
 
         private void ItemViewOnCollisionEnter(GameObject gameObject)
         {
-            if (ItemModel.CurrentState == ItemState.Dragging)
+            if (ItemModel.CurrentState is ItemState.Dragging or ItemState.DraggingOnSurface)
             {
                 if (gameObject.CompareTag(_itemsConfig.ItemTag) &&
                     gameObject.TryGetComponent<ItemView>(out var itemView))
@@ -49,12 +54,18 @@ namespace Builder.Items
                         UpdateDraggingColor();
                     }
                 }
+                else if (gameObject.CompareTag(_itemsConfig.SurfaceTag) &&
+                         gameObject.TryGetComponent<SurfaceView>(out var surfaceView))
+                {
+                    _surfacesInCollision.Add(surfaceView);
+                    UpdateDraggingColor();
+                }
             }
         }
 
         private void ItemViewOnCollisionExit(GameObject gameObject)
         {
-            if (ItemModel.CurrentState == ItemState.Dragging)
+            if (ItemModel.CurrentState is ItemState.Dragging or ItemState.DraggingOnSurface)
             {
                 if (gameObject.CompareTag(_itemsConfig.ItemTag) &&
                     gameObject.TryGetComponent<ItemView>(out var itemView))
@@ -62,20 +73,60 @@ namespace Builder.Items
                     _itemViewsInCollision.Remove(itemView);
                     UpdateDraggingColor();
                 }
+                else if (gameObject.CompareTag(_itemsConfig.SurfaceTag) &&
+                         gameObject.TryGetComponent<SurfaceView>(out var surfaceView))
+                {
+                    _surfacesInCollision.Remove(surfaceView);
+                    UpdateDraggingColor();
+                }
             }
+        }
+
+        public bool CanPutOnSurface(SurfaceType surfaceType)
+        {
+            bool SurfaceTypePredicate(ItemTypesForSurface it) => it.SurfaceType == surfaceType;
+
+            var itemTagsForSurface = _itemsConfig.ItemTagsForSurfaces.First(SurfaceTypePredicate);
+            return itemTagsForSurface.ItemTypes.Contains(_itemView.ItemController.ItemModel.TypeName);
         }
 
         private void UpdateDraggingColor()
         {
-            _itemView.MeshRenderer.sharedMaterial.color = _itemViewsInCollision.Count > 0 ?
-                _itemsConfig.ForbiddenColor : _itemsConfig.AllowedColor;
+            if (_itemView.MeshRenderer.sharedMaterial != _itemsConfig.ItemInFocusMaterial)
+            {
+                return;
+            }
+            
+            bool allowedToPut = AllowedToPut();
+
+            _itemView.MeshRenderer.sharedMaterial.color = allowedToPut ?
+                _itemsConfig.AllowedColor : _itemsConfig.ForbiddenColor;
+            
+            Debug.Log($"UpdateDraggingColor(), allowedToPut = {allowedToPut}, Color = {_itemView.MeshRenderer.sharedMaterial.color.ToString()}");
+        }
+
+        private bool AllowedToPut()
+        {
+            bool allowedToPut = false;
+            if (ItemModel.CurrentState == ItemState.DraggingOnSurface && _itemViewsInCollision.Count == 0)
+            {
+                if (_surfacesInCollision.Count == 0 ||
+                    (_surfacesInCollision.Count == 1 &&
+                     _surfacesInCollision[0].ItemsParent == _itemView.transform.parent))
+                {
+                    allowedToPut = true;
+                }
+            }
+
+            return allowedToPut;
         }
 
         public void PutOnObject(Transform parent, Vector3 pivotPoint, bool isSurface)
         {
             _itemView.transform.SetParent(parent);
             _itemView.transform.localRotation = Quaternion.Euler(0f, ItemModel.CurrentRotation, 0f);
-            _itemView.transform.position = pivotPoint - _itemView.InstallationPivot.localPosition;
+            _itemView.transform.position = pivotPoint;
+            _itemView.transform.localPosition -= _itemView.InstallationPivot.localPosition;
             ItemModel.SetCurrentState(isSurface ? ItemState.DraggingOnSurface : ItemState.Dragging);
         }
 
@@ -109,8 +160,7 @@ namespace Builder.Items
 
         public bool RequestPut()
         {
-            bool canPut = ItemModel.CurrentState == ItemState.DraggingOnSurface && _itemViewsInCollision.Count == 0;
-            if (canPut)
+            if (AllowedToPut())
             {
                 _itemView.gameObject.layer = LayerMask.NameToLayer(_itemsConfig.InactiveItemsLayerName);
                 _itemViewsInCollision.Clear();
@@ -120,12 +170,11 @@ namespace Builder.Items
             return false;
         }
 
-        
-
         public void Dispose()
         {
             _itemView.CollisionEnter -= ItemViewOnCollisionEnter;
             _itemView.CollisionExit -= ItemViewOnCollisionExit;
+            ItemModel.CurrentStateChanged += ItemModelOnCurrentStateChanged;
         }
     }
 }

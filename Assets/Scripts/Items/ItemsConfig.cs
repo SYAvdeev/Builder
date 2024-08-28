@@ -18,6 +18,7 @@ namespace Builder.Items
         [SerializeField] private string _itemTag;
         [SerializeField] private string _draggingItemsLayerName;
         [SerializeField] private string _inactiveItemsLayerName;
+        [SerializeField] private string _surfaceTag;
 
         public Color AllowedColor => _allowedColor;
 
@@ -32,6 +33,8 @@ namespace Builder.Items
         public string DraggingItemsLayerName => _draggingItemsLayerName;
 
         public string ItemTag => _itemTag;
+
+        public string SurfaceTag => _surfaceTag;
 
         public IReadOnlyCollection<ItemTypesForSurface> ItemTagsForSurfaces => _itemTagsForSurfaces;
     }

@@ -1,4 +1,6 @@
-﻿namespace Builder.Items
+﻿using System;
+
+namespace Builder.Items
 {
     public abstract class ItemModel : IItemModel
     {
@@ -13,8 +15,16 @@
         
         void IItemModel.SetCurrentState(ItemState itemState)
         {
+            if (CurrentState == itemState)
+            {
+                return;
+            }
+            
             CurrentState = itemState;
+            CurrentStateChanged?.Invoke(itemState);
         }
+
+        public event Action<ItemState> CurrentStateChanged;
 
         public abstract string TypeName { get; }
     }

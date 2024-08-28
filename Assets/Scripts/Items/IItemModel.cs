@@ -1,4 +1,6 @@
-﻿namespace Builder.Items
+﻿using System;
+
+namespace Builder.Items
 {
     public interface IItemModel
     {
@@ -6,6 +8,7 @@
         internal void SetCurrentRotation(float rotation);
         ItemState CurrentState { get; }
         internal void SetCurrentState(ItemState itemState);
+        event Action<ItemState> CurrentStateChanged;
         string TypeName { get; }
     }
 }

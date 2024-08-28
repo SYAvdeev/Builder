@@ -12,6 +12,7 @@ namespace Builder.Items
         string InactiveItemsLayerName { get; }
         string DraggingItemsLayerName { get; }
         string ItemTag { get; }
+        string SurfaceTag { get; }
         public IReadOnlyCollection<ItemTypesForSurface> ItemTagsForSurfaces { get; }
     }
 }
