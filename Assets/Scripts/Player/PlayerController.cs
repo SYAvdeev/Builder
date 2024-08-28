@@ -1,5 +1,4 @@
-﻿using System;
-using Builder.Items;
+﻿using Builder.Items;
 using Builder.Items.ItemStand;
 using UnityEngine;
 
@@ -9,15 +8,21 @@ namespace Builder.Player
     {
         private readonly PlayerView _playerView;
         private readonly IPlayerService _playerService;
+        private readonly PlayerIdleState _playerIdleState;
+        private readonly PlayerBuildingState _playerBuildingState;
 
-        private IItemController _currentItemInFocus;
-        private IItemStandController _currentItemStandInFocus;
+        private IPlayerState _currentState;
+        
+        public IItemController CurrentItemInFocus { get; private set; }
+        public IItemStandController CurrentItemStandInFocus { get; private set; }
 
-        public PlayerController(PlayerView playerView, IPlayerService playerService) :
-            base(playerView, playerService.Model)
+        public PlayerController(PlayerView playerView, IPlayerService playerService) 
+            : base(playerView, playerService.Model)
         {
             _playerView = playerView;
             _playerService = playerService;
+            _playerIdleState = new PlayerIdleState(this);
+            _playerBuildingState = new PlayerBuildingState(this);
         }
 
         public override void Initialize()
@@ -27,37 +32,42 @@ namespace Builder.Player
             _playerService.ActionTaken += PlayerServiceOnActionTaken;
             _playerService.ItemRotatedClockwise += PlayerServiceOnItemRotatedClockwise;
             _playerService.ItemRotatedCounterclockwise += PlayerServiceOnItemRotatedCounterclockwise;
+            SetIdleState();
+        }
+
+        void IPlayerController.SetCurrentItemInFocus(IItemController itemController)
+        {
+            CurrentItemInFocus = itemController;
+        }
+
+        void IPlayerController.SetCurrentItemStandInFocus(IItemStandController currentItemStandInFocus)
+        {
+            CurrentItemStandInFocus = currentItemStandInFocus;
+        }
+
+        public void SetIdleState()
+        {
+            _currentState = _playerIdleState;
+        }
+
+        public void SetBuildingState()
+        {
+            _currentState = _playerBuildingState;
         }
 
         private void PlayerServiceOnItemRotatedClockwise()
         {
-            _currentItemInFocus?.Rotate(true);
+            CurrentItemInFocus?.Rotate(true);
         }
 
         private void PlayerServiceOnItemRotatedCounterclockwise()
         {
-            _currentItemInFocus?.Rotate(false);
+            CurrentItemInFocus?.Rotate(false);
         }
 
         private void PlayerServiceOnActionTaken()
         {
-            switch (_playerService.Model.CurrentState)
-            {
-                case PlayerState.Idle:
-                    if (_currentItemInFocus != null && _currentItemInFocus.RequestDrag())
-                    {
-                        _playerService.Model.SetCurrentState(PlayerState.Building);
-                    }
-                    break;
-                case PlayerState.Building:
-                    if (_currentItemInFocus.RequestPut())
-                    {
-                        _playerService.Model.SetCurrentState(PlayerState.Idle);
-                    }
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            _currentState.OnActionTaken();
         }
 
         private void ModelOnCurrentRotationChanged(Vector2 rotation)
@@ -84,87 +94,8 @@ namespace Builder.Player
                 out RaycastHit hitInfo,
                 playerConfig.ItemHoldDistance,
                 playerConfig.RaycastLayerMask);
-
-            switch (_playerService.Model.CurrentState)
-            {
-                case PlayerState.Idle:
-
-                    if (hitInfo.collider)
-                    {
-                        var colliderGameObject = hitInfo.collider.gameObject;
-                        if (colliderGameObject.CompareTag(playerConfig.ItemTag) &&
-                            colliderGameObject.TryGetComponent<ItemView>(out var itemView))
-                        {
-                            if (_currentItemInFocus != null)
-                            {
-                                if (_currentItemInFocus == itemView.ItemController)
-                                {
-                                    break;
-                                }
-
-                                _currentItemInFocus.RemoveFromFocus();
-                            }
-
-                            _currentItemInFocus = itemView.ItemController;
-                            _currentItemInFocus.SetInFocus();
-                            break;
-                        }
-                    }
-
-                    _currentItemInFocus?.RemoveFromFocus();
-                    _currentItemInFocus = null;
-
-                    break;
-                case PlayerState.Building:
-
-                    if (hitInfo.collider)
-                    {
-                        var colliderGameObject = hitInfo.collider.gameObject;
-                        if ((colliderGameObject.CompareTag(playerConfig.SurfaceTag) ||
-                             colliderGameObject.CompareTag(playerConfig.ItemTag)))
-                        {
-                            if (colliderGameObject.TryGetComponent<ItemStandView>(out var itemStandView))
-                            {
-                                if (_currentItemStandInFocus != null)
-                                {
-                                    if (_currentItemStandInFocus == itemStandView.ItemStandController)
-                                    {
-                                        itemStandView.ItemStandController.PutItem(_currentItemInFocus, hitInfo.point);
-                                        break;
-                                    }
-                                    
-                                    if (itemStandView.ItemStandController.CanPutItem(_currentItemInFocus))
-                                    {
-                                        _currentItemStandInFocus = itemStandView.ItemStandController;
-                                        itemStandView.ItemStandController.PutItem(_currentItemInFocus, hitInfo.point);
-                                        break;
-                                    }
-                                }
-                                else
-                                {
-                                    if (itemStandView.ItemStandController.CanPutItem(_currentItemInFocus))
-                                    {
-                                        _currentItemStandInFocus = itemStandView.ItemStandController;
-                                        itemStandView.ItemStandController.PutItem(_currentItemInFocus, hitInfo.point);
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    _currentItemStandInFocus?.RemoveCurrentItem();
-                    _currentItemStandInFocus = null;
-                    
-                    Vector3 position = cameraTransform.position +
-                                       (playerConfig.ItemHoldDistance * cameraTransform.forward);
-                    
-                    PutItem(_currentItemInFocus, position);
-                    
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            
+            _currentState.HandleRaycast(hitInfo, playerConfig, cameraTransform);
         }
 
         private void MoveCharacter(float fixedDeltaTime)
@@ -177,17 +108,17 @@ namespace Builder.Player
             _playerView.CharacterController.Move(characterMovement * fixedDeltaTime);
         }
 
-        public override bool CanPutItem(IItemController itemController) => _currentItemInFocus == null;
+        public override bool CanPutItem(IItemController itemController) => CurrentItemInFocus == null;
 
         public override void PutItem(IItemController itemController, Vector3 position)
         {
             base.PutItem(itemController, position);
-            _currentItemInFocus = itemController;
+            CurrentItemInFocus = itemController;
         }
 
         public override void RemoveCurrentItem()
         {
-            _currentItemInFocus = null;
+            CurrentItemInFocus = null;
         }
 
         public void Dispose()

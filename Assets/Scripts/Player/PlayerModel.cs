@@ -38,11 +38,6 @@ namespace Builder.Player
             CurrentRotationChanged?.Invoke(rotation);
         }
         public event Action<Vector2> CurrentRotationChanged;
-        public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
-        void IPlayerModel.SetCurrentState(PlayerState playerState)
-        {
-            CurrentState = playerState;
-        }
 
         public string ItemStandTypeName => "Player";
     }

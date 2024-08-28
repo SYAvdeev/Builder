@@ -13,7 +13,5 @@ namespace Builder.Player
         Vector2 CurrentRotation { get; }
         internal void AddCurrentRotation(Vector2 rotation);
         event Action<Vector2> CurrentRotationChanged;
-        PlayerState CurrentState { get; }
-        internal void SetCurrentState(PlayerState playerState);
     }
 }
